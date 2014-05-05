@@ -9,8 +9,8 @@
 #import "NSString+PinYin4Cocoa.h"
 
 @interface PinyinFormatter ()
-+(NSInteger)getNumericValue:(unichar)c;
-+(NSInteger)indexOfChar:(int*) table ch:(unichar)c;
++(int)getNumericValue:(unichar)c;
++(int)indexOfChar:(int*) table ch:(unichar)c;
 @end    
 
 @implementation PinyinFormatter
@@ -88,10 +88,10 @@ static unichar numericValues[] = {
     NSString *allUnmarkedVowelStr = @"aeiouv";
     NSString *allMarkedVowelStr = @"āáăàaēéĕèeīíĭìiōóŏòoūúŭùuǖǘǚǜü";
     if ([lowerCasePinyinStr matchesPatternRegexPattern:@"[a-z]*[1-5]"]) {
-        int tuneNumber = [PinyinFormatter getNumericValue:[lowerCasePinyinStr characterAtIndex:lowerCasePinyinStr.length -1]];
-      int indexOfA = [lowerCasePinyinStr indexOf:charA];
-      int indexOfE = [lowerCasePinyinStr indexOf:charE];
-      int ouIndex = [lowerCasePinyinStr indexOfString:ouStr];
+      int tuneNumber = [PinyinFormatter getNumericValue:[lowerCasePinyinStr characterAtIndex:lowerCasePinyinStr.length -1]];
+      int indexOfA = (int)[lowerCasePinyinStr indexOf:charA];
+      int indexOfE = (int)[lowerCasePinyinStr indexOf:charE];
+      int ouIndex = (int)[lowerCasePinyinStr indexOfString:ouStr];
       if (-1 != indexOfA) {
         indexOfUnmarkedVowel = indexOfA;
         unmarkedVowel = charA;
@@ -105,7 +105,7 @@ static unichar numericValues[] = {
         unmarkedVowel = [ouStr characterAtIndex:0];
       }
       else {
-        for (int i = [lowerCasePinyinStr length] - 1; i >= 0; i--) {
+        for (int i = (int)[lowerCasePinyinStr length] - 1; i >= 0; i--) {
           if ([[NSString valueOfChar:[lowerCasePinyinStr characterAtIndex:i]] matchesPatternRegexPattern:@"[aeiouv]"]) {
             indexOfUnmarkedVowel = i;
             unmarkedVowel = [lowerCasePinyinStr characterAtIndex:i];
@@ -114,7 +114,7 @@ static unichar numericValues[] = {
         }
       }
       if ((defautlCharValue != unmarkedVowel) && (defautlIndexValue != indexOfUnmarkedVowel)) {
-        int rowIndex = [allUnmarkedVowelStr indexOf:unmarkedVowel];
+        int rowIndex = (int)[allUnmarkedVowelStr indexOf:unmarkedVowel];
         int columnIndex = tuneNumber - 1;
         int vowelLocation = rowIndex * 5 + columnIndex;
         unichar markedVowel = [allMarkedVowelStr characterAtIndex:vowelLocation];
@@ -137,7 +137,7 @@ static unichar numericValues[] = {
   }
 }
 
-+(NSInteger)getNumericValue:(unichar)c
++(int)getNumericValue:(unichar)c
 {
     if (c < 128) {
         // Optimized for ASCII
@@ -168,7 +168,7 @@ static unichar numericValues[] = {
 
 }
 
-+(NSInteger)indexOfChar:(int*) table ch:(unichar)c{
++(int)indexOfChar:(int*) table ch:(unichar)c{
     NSInteger len=sizeof(table)/sizeof(table[0]);
     for (int i = 0; i < len; i++) {
         if (table[i] == (int) c) {
